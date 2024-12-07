@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>타입별 항목</title>
+  <style>
+
+    html, body { height: 100%; margin:0; padding:0; text-align: center; align-items:center;justify-content:center;}
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .categories {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      text-align: center; 
+      align-items:center;
+      justify-content:center;
+ 
+      
+ 
+    }
+    .type {
+      cursor: pointer;
+      padding: 5px 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      background-color: #f64848;
+      font-size: 20px;
+      color: #fefefe;
+     
+    }
+    .type:hover {
+      background-color: #ff0a0a;
+    }
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #results {
+      margin-top: 20px;
+      
+    }
+    .item {
+  display: flex;
+  align-items: stretch; /* 내부 요소 높이를 동일하게 */
+  gap: 20px;
+  margin-bottom: 20px;
+  height: 30vh; /* 화면 높이의 20%로 설정 */
+  max-height: 50%; /* 부모 높이의 30%로 제한 */
+  min-height: 20%; /* 부모 높이의 10%로 제한 */
+  margin-left:10%
+}
+
+.item img {
+  width: auto; /* 가로 비율 자동 조정 */
+  height: 100%; /* 컨테이너 높이에 맞추기 */
+  object-fit: cover; /* 비율 유지하며 크기 조정 */
+  border:4px solid #f7dd78 ;
+  transition: 0.3s ease-in-out
+
+}
+
+.item .content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  height: 100%; /* 부모 높이에 맞추기 */
+  overflow: hidden; /* 텍스트 넘침 방지 */
+  border:5px solid #f7dd78;
+  min-width:50%;
+  padding-left:2%;
+  flex-grow: 1; /* 남은 공간을 채우도록 설정 */
+
+
+}
+
+
+    .item .category {
+      margin-top: 5px;
+      color: #555;
+    }
+    .item .description {
+      margin-top: 5px;
+      color: #777;
+    }
+  
+    h1 {
+      text-align: center; 
+      align-items:center;
+      justify-content:center;
+
+
+    }
+
+    h2{
+      text-align: center; 
+      align-items:center;
+      justify-content:center;
+
+
+    }
+
+    .로고{
+      width:180px; 
+      height:auto;
+      text-align: center; 
+      align-items:center;
+      justify-content:center;
+     }
+    
+    header{
+      height:20%;
+      width:100%} 
+
+      .menu {
+    display: none; /* 기본적으로 메뉴는 숨김 */
+    padding: 10px;
+    border-top: 1px solid #323544;
+    margin-top: 10px;
+    background-color: #6e7dbe;
+    border-radius: 5px;
+  
+  }
+
+  .menu.show {
+    display: block; /* 클릭 시 표시 */
+  }
+
+  ul {
+    display: flex; /* Flexbox 레이아웃 */
+    gap: 20px; /* 항목 간 간격 */
+    padding: 0;
+    margin: 0;
+  }
+
+  Button{
+    margin-top: 2%;
+    width: 150px;
+    height: auto;
+    text-align: center; 
+    align-items:center;
+    justify-content:center;
+  }
+
+  .item .description{
+    font-size: 80%;
+  }
+
+
+  </style>
+</head>
+
+<body>
+  <header>
+  <a href="index.html"><img src="/images_기말과제/한동이츠로고.png" class="로고"></a>
+  <hr>
+  <div class="categories" id="typeButtons">
+    <!-- 카테고리 버튼이 동적으로 추가됩니다 -->
+  </div>
+</header>
+
+  <div id="results">
+    <h1></h1>
+    <div id="items">
+    </div>
+  </div>
+
+
+  <script>
+    // 샘플 JSON 데이터
+    const data = {
+      items: [
+        { 
+            id: 1, 
+            name: ["드롭탑"],
+            category: ["가볍게 먹기 좋은", "가성비", "교수님과 먹기 좋은"],
+            description: "디지털유목민을 위한 쉼터로서 'Drop in a top place' 명제를 바탕으로 ‘최고의 장소에서 최상의 커피를 즐긴다’는 컨셉을 가진 프랜차이즈 커피 전문점이다. 커피류 외 여러 음료와 함께 다양한 디저트를 판매한다.",
+            image: "/images_기말과제/드롭탑.png",
+            type: "카페", 
+            mouseoverImage: "/images_기말과제/001.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["아메리카노", "에소프레소","카페 라떼","카푸치노","바닐라 라떼"]
+        },
+        { 
+            id: 2, 
+            name: ["히즈빈스"],
+            category: ["조용한", "교수님과 먹기 좋은", "대화하기 좋은"],
+            type: "카페",
+            description: "㈜향기내는 사람들의 브랜드로서 장애인 전문가를 양성하는 프랜차이즈 커피 전문점이다. SCAA 연속 1위 커피 '게이샤' 원두를 사용하여 단맛 중심의 최고급의 맛좋은 커피와 함께 여러음료들을 판매한다.",
+            image: "/images_기말과제/히즈빈스.jpg",
+            type: "카페",
+            mouseoverImage: "/images_기말과제/003.png", // 데이터형식: 호버 시 표시할 이미지 
+            menu: ["아메리카노", "카페 라떼", "에소프레소", "바닐라 라떼","카푸치노"] 
+        },
+        { 
+            id: 3, 
+            name: ["애플인더트리"], 
+            category: ["가성비", "빨리 먹을 수 있는", "가볍게 먹기 좋은"] ,
+            description: "저렴한 가격에 맛이 좋아 학생들이 많이 찾는 인기있는 카페이다. 커피 음료 외 베이커리도 함께 판매하며 '오늘의 음료' 라는 이벤트성을 가진 메뉴로 기존의 메뉴와는 다른 색다른 음료를 판매하기도 한다.",
+            image: "/images_기말과제/애인트.png",
+            type: "카페",
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu:["아메리카노", "카페 라떼", "복숭아 아이스티", "바닐라 라떼","크로와상"]
+        },
+        { 
+            id: 4,
+             name: ["예소드라운지"], 
+            category: ["인테리어", "핫 플레이스", "카공하기 좋은"] ,
+            description: "한동대학교 코너스톤홀 1층에 위치한 카페이다. 편안하고 감성적인 분위기의 인테리어로 많은 학생들이 찾으면 커핀 음료 외에 디저트, 요리류를 함께 판매한다.",
+            image: "/images_기말과제/예소드.jpg",
+            type: "카페",
+            mouseoverImage: "/images_기말과제/004.png",// 데이터형식: 호버 시 표시할 이미지
+            menu:["아메리카노", "카페 라떼", "에소프레소", "바닐라 라떼","카푸치노"]
+        },
+        { 
+            id: 5, 
+            name: ["맘스카페"], 
+            category: ["가볍게 먹기 좋은", "가성비", "빨리 먹을 수 있는"], 
+            description: "한동대학교  학관 1층 맘스 식당 내에 있는 카페이다. 저렴한 가격으로 커피 음료 디저트 외에 간단한 식사류로 김밥, 샌드위치 등을 판매한다.",
+            image: "/images_기말과제/맘스카페.jpg",
+            type: "카페",
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu:["에소프레소", "카페 라떼", "카푸치노", "바닐라 라떼","카라멜 마끼야또"] 
+        },
+        { 
+            id: 6, 
+            name: "샐러디", 
+            category: ["빨리 먹을 수 있는", "가볍게 먹기 좋은", "혼밥"] ,
+            description: "한동대학교 복지동에 위치한 2024년도 기준 가장 최근에 생긴 프랜차이즈 전문점이다. 건강한 패스트 푸드로서 샐러드 외 샌드위치, 웜볼 등을 판매한다.",
+            image: "/images_기말과제/셀러디.png",
+            type: "식당",
+            mouseoverImage: "/images_기말과제/001.png", // 데이터형식: 호버 시 표시할 이미지
+            menu:["탄단지 샐러디", "콥 샐러디", "로스트 닭다리살 샐러디", "우삼겹 웜볼","비빔메밀면"]
+        },
+        { 
+            id: 7, 
+            name: "든든한동", 
+            category: ["든든한", "밥고 하기 좋은", "집밥"], 
+            description: "학관 내에 위치하여 아침, 점심, 저녁에 운영한다. 다양한 반찬과 함께 매일 각기 다른 메뉴들을 저렴한 가격에 학생들에게 든든한 식사를 제공하고 있다. 각 메뉴의 경우, 한동대 히즈넷 사이트 및 스마트 캠퍼스 어플에서 정보를 제공한다.",
+            image: "/images_기말과제/든든한동.jpg",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["쌀밥", "어묵국", "돼지고기콩나물볶음", "튀김만두","양파오이생채"]  
+        },
+        { 
+            id: 8, 
+            name: "따스한동", 
+            category: ["든든한", "밥고 하기 좋은", "맛집"], 
+            description: "학관 내에 위치하여 아침, 점심, 저녁에 운영한다. 비빔밥이나 덮밥 등 다양한 한식 메뉴를 매일 각기 다르게 제공한다.",
+            image: "/images_기말과제/따스한동.jpg",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["돈까스 김치찌개", "마라샹궈덮밥"]
+        },
+        { 
+            id: 9, 
+            name: "아시안마켓", 
+            category: ["빨리 먹을 수 있는", "가볍게 먹기 좋은", "밥고하기 좋은"], 
+            description: "학관 내 중앙에 위치하여 라면류와 덮밥류를 제공하고 있다. 다른 학관 식당과는 달리 점심에만 운영되고 있다.",
+            image: "/images_기말과제/아시안마켓.jpg",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["라면", "마요덮밥"]
+        },
+        { 
+            id: 10, 
+            name: ["H.plate"], 
+            category: ["든든한", "밥고하기 좋은", "가성비"], 
+            description: "학관 내 중앙에 위치하여 돈까스와 스파게티 등 경양식 및 양식류를 매일 각기 다른 메뉴 구성으로 판매하고 있으며 이로 인해 많은 학생들이 찾는 음식점이다.",
+            image: "/images_기말과제/hplate.jpg",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["등심돈까스", "오꼬노미돈까스", "소불고기로제파스타", "찜닭"]
+        },
+        { 
+            id: 11, 
+            name: ["맘스키친"], 
+            category: ["든든한", "가성비", "집밥"], 
+            description: "학관 내에 위치하여 아침, 점심, 저녁에 운영한다. 한동대학교의 대표 일품 식당으로 대엄마의 마음으로 정성을 담아 집에서 먹는 밥처럼 제공한다는 의미를 가진다. 학생들에게 저렴한 가격에 든든한 식사를 매일 각기 다른 메뉴로서 제공하고 있다.",
+            image: "/images_기말과제/맘스.png",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/002.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["해물순두부찌개", "김치우동", "치즈돈까스", "현미쌀밥","양배추샐러드"]
+        },
+        { 
+            id: 12, 
+            name: ["그레이스 더 테이블"], 
+            category: ["단체 식사", "교수님과 먹기 좋은", "분위기 있는"], 
+            description: "김영길그레이스스쿨 1층 내에 위치하여 한식, 태국식,멕시코식 등 다양한 국가의 음식을 제공하는 식당이다.",
+            image: "/images_기말과제/그레이스테이블.png",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/005.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["꼬막비빔밥", "쇠고기비빔밥", "찹스테이크덮밥", "베이컨 크림파스타"] 
+        },
+        { 
+            id: 13, 
+            name: ["한동라운지"], 
+            category: ["밥고 하기 좋은", "든든한", "자극적인"] ,
+            description: "복지동 3층 내에 위치하여 한식, 중식으로 나뉘어 국밥, 찌개, 그외 중화, 직화, 덮밥 등 특정메뉴를 가지고 학생들에게 제공되는 음식점으로 포장주문도 함께 할 수 있다.",
+            image: "/images_기말과제/라운지.jpg",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/001.png",// 데이터형식: 호버 시 표시할 이미지
+            menu: ["짜장면", "홍짬뽕", "찹쌀탕수육", "돼지국밥","순두부찌개","부대찌개"] 
+        },
+        { 
+            id: 14, 
+            name: ["명성"], 
+            category: ["자극적인", "밥고하기 좋은", "든든한"] ,
+            description: "복지동 2층에 내에 위치하며 다양한 퓨전 음식들을 판매하고 있는 음식점으로. 식사류, 분식류 등으로 다양한 메뉴들을 판매한다. 포장주문도 함께 할 수 있으며 시험기간 한정으로 주먹밥(포장 전용메뉴)도 판매한다.",
+            image: "/images_기말과제/명성.png",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/001.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["오야코커리", "제육덮밥", "치킨마요덮밥", "타코야끼","숙주라면"]
+        },
+        {
+
+            id: 15, 
+            name: ["버거킹"], 
+            category: ["자극적인", "핫 플레이스", "밥고하기 좋은"], 
+            description: "복지동 2층 내에 위치하여 미국에서 탄생한 세계적인 패스트푸드 프랜차이즈 햄버거 전문점이다. 햄버거를 주 메뉴로서 많은 학생들이 찾는 음식점이다.",
+            image: "/images_기말과제/버거킹.png",
+            type: "식당", 
+            mouseoverImage: "/images_기말과제/001.png", // 데이터형식: 호버 시 표시할 이미지
+            menu: ["갈릭불고기 와퍼", "오리지널스 화이트 페타", "두툼버거", "트리플 머쉬룸 버거"]
+        },
+        {
+          id:16,
+          name: "한동대학교 매점",
+          category: ["가성비", "빨리 먹을 수 있는", "가볍게 먹을 수 있는"],
+          image:  "/images_기말과제/매점.png",
+          type: "편의점", 
+         },
+        {
+          id:17,
+          name: "CU 한동대오석관점",
+          category: ["가성비", "빨리 먹을 수 있는", "가볍게 먹을 수 있는"],
+          image: "/images_기말과제/씨유.jpg",
+          type: "편의점", 
+        },
+        {
+          id:18,
+          name: "GS25 한동대학사점",
+          category: ["가성비", "빨리 먹을 수 있는", "가볍게 먹을 수 있는"],
+          image:  "/images_기말과제/라운지GS.png",
+          type: "편의점", 
+         
+        },
+        {
+          id:19,
+          name: "GS25 한동대기숙사점",
+          category: ["가성비", "빨리 먹을 수 있는", "가볍게 먹을 수 있는"],
+          image:  "/images_기말과제/GS25기숙사점.jpg",
+          type: "편의점", 
+         
+        }    
+      ]
+    };
+  
+    function displayItems(items) {
+      const itemsDiv = document.getElementById("items");
+      itemsDiv.innerHTML = ""; // 기존 내용을 초기화
+
+      if (items.length > 0) {
+        items.forEach(item => {
+          const itemDiv = document.createElement("div");
+          itemDiv.className = "item";
+
+
+          // 이미지 추가
+          const image = document.createElement("img");
+          image.src = item.image; // 각 항목에 설정된 이미지 URL 사용
+          image.alt = item.name;
+
+          image.onmouseover = () => {
+        if (item.mouseoverImage) {
+          image.src = item.mouseoverImage; // 호버 시 교체할 이미지
+        }
+      };
+
+      // 마우스 아웃 시 원래 이미지로 복구
+      image.onmouseout = () => {
+        image.src = item.image || "img/default.png"; // 원래 이미지 복구
+      };
+          
+
+    
+
+          // 텍스트 내용 추가
+          const contentDiv = document.createElement("div");
+          contentDiv.className = "content";
+
+          // 이름 및 ID 출력
+          const titleDiv = document.createElement("div");
+          titleDiv.innerHTML = `<strong>${item.name}</strong>`;
+          contentDiv.appendChild(titleDiv);
+
+          // 카테고리 추가
+        const categoryP = document.createElement("p");
+        categoryP.className = "category_P";
+        categoryP.textContent = `카테고리: ${item.category.join(", ")}`;
+        contentDiv.appendChild(categoryP);
+
+          // 설명 추가
+          const descDiv = document.createElement("div");
+          descDiv.className = "description";
+          descDiv.textContent = item.description;
+          contentDiv.appendChild(descDiv);
+
+// 메뉴 버튼 및 내용 추가
+if (item.menu && item.menu.length > 0) {
+        const menuButton = document.createElement("button");
+        menuButton.textContent = "메뉴 보기";
+        menuButton.style.cursor = "pointer";
+
+        // 버튼 클릭 시 콘텐츠를 메뉴로 대체
+        menuButton.onclick = () => {
+          contentDiv.innerHTML = ""; // 기존 내용을 지우기
+          const menuTitle = document.createElement("h3");
+          menuTitle.textContent = "주요 메뉴";
+          contentDiv.appendChild(menuTitle);
+
+          const menuList = document.createElement("ul");
+          item.menu.forEach(menuItem => {
+            const menuItemElement = document.createElement("li");
+            menuItemElement.textContent = menuItem;
+            menuList.appendChild(menuItemElement);
+          });
+          contentDiv.appendChild(menuList);
+
+          const backButton = document.createElement("button");
+          backButton.textContent = "뒤로 가기";
+          backButton.style.cursor = "pointer";
+
+          // 뒤로 가기 버튼 클릭 시 원래 콘텐츠로 복원
+          backButton.onclick = () => {
+            contentDiv.innerHTML = ""; // 메뉴 내용을 지우고 원래 콘텐츠로 복원
+            contentDiv.appendChild(titleDiv);
+            contentDiv.appendChild(categoryP);
+            contentDiv.appendChild(descDiv);
+            contentDiv.appendChild(menuButton);
+          };
+          contentDiv.appendChild(backButton);
+        };
+
+        contentDiv.appendChild(menuButton);
+      }
+
+      itemDiv.appendChild(image);
+          itemDiv.appendChild(contentDiv);
+
+          // 항목을 itemsDiv에 추가
+          itemsDiv.appendChild(itemDiv);
+        });
+      } 
+    }
+
+
+    function createTypeButtons() {
+      const typeButtonsDiv = document.getElementById("typeButtons");
+
+      const typeList = [...new Set(data.items.map(item => item.type).filter(Boolean))];
+
+      const allButton = document.createElement("div");
+      allButton.className = "type";
+      allButton.textContent = "전체";
+      allButton.onclick = () => displayItems(data.items);
+      typeButtonsDiv.appendChild(allButton);
+
+      typeList.forEach(type => {
+        const button = document.createElement("div");
+        button.className = "type";
+        button.textContent = type;
+        button.onclick = () => {
+          const filteredItems = data.items.filter(item => item.type === type);
+          displayItems(filteredItems);
+        };
+        typeButtonsDiv.appendChild(button);
+      });
+    }
+
+    function createTypeButtons() {
+      const typeButtonsDiv = document.getElementById("typeButtons");
+      const typeList = [...new Set(data.items.map(item => item.type).filter(Boolean))];
+
+      const allButton = document.createElement("div");
+      allButton.className = "type";
+      allButton.textContent = "전체";
+      allButton.onclick = () => {
+        updateHeader("전체");
+        displayItems(data.items);
+      };
+      typeButtonsDiv.appendChild(allButton);
+
+      typeList.forEach(type => {
+        const button = document.createElement("div");
+        button.className = "type";
+        button.textContent = type;
+        button.onclick = () => {
+          updateHeader(type);
+          const filteredItems = data.items.filter(item => item.type === type);
+          displayItems(filteredItems);
+        };
+        typeButtonsDiv.appendChild(button);
+      });
+    }
+
+    function updateHeader(category) {
+      const header = document.querySelector("h1");
+      header.textContent = category; // h1 태그의 텍스트를 변경
+    }
+
+    window.onload = () => {
+      createTypeButtons();
+      updateHeader("카페"); // 초기 로드 시 "식당"으로 설정
+      const initialItems = data.items.filter(item => item.type === "카페");
+      displayItems(initialItems);
+    };
+    
+   
+// 마우스 오버 시 이미지 변경 이벤트 추가
+     
+
+
+  </script>
+</body>
+</html>
